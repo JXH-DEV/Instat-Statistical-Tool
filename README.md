@@ -8,9 +8,23 @@ It is meant for schools, universities and offices in Albania, and for anyone els
 
 It is not an INSTAT product and has no connection to them. The data is theirs. Their files say it can be reused if the source is named, and everything this program exports names it.
 
+## What it looks like
+
+Pictures of the program, made by `tools/screenshots.py`; more are in `docs/screenshots/`. The second one shows a real INSTAT table, the others the invented demo data that comes with the program.
+
+![Insights: findings in plain sentences and charts, for a monthly consumer price index](docs/screenshots/02-insights.png)
+
+![How it was read: a real census table of INSTAT with the sheet coloured by role, and the note that 12 sheets, one per prefecture, were combined into one table](docs/screenshots/14-real-xls-how-it-was-read.png)
+
+![The same findings in Albanian, in the dark theme](docs/screenshots/09-albanian-dark.png)
+
+![On a phone: the results come first after a file is opened](docs/screenshots/11-phone-results.png)
+
 ## Running it
 
 **Windows 10 or 11, 64-bit.** Get the `.exe` from the Releases page and double-click it. Python is inside, so there is nothing to install. The first start unpacks the program into your user folder and takes about a minute; after that it opens in a few seconds and your browser shows the app. Windows may say it protected your PC because the file is not code-signed (certificates cost money): click More info, then Run anyway. If your computer only accepts signed programs, take the portable zip from the same page instead, unpack it and open `Start-INSTAT-Explorer.bat`.
+
+**In a browser, with nothing to install.** The web version runs the same program inside your browser: upload an Excel or CSV file and read the results. Your files are not sent to any server. It cannot download from instat.gov.al (browsers do not allow it), so download the file from INSTAT's page and upload it. Once GitHub Pages is switched on for the repository it is at `https://<owner>.github.io/<repository>/`; `docs/WEB.md` says how it works and how to host it.
 
 **Anything else.** You need Python 3.11 or newer, 64-bit. From a clone of this repository:
 
@@ -54,7 +68,9 @@ Add `--lang sq` to any of them for Albanian, or set `INSTAT_LANG=sq`.
 
 ## Good to know
 
-- It has been tried on 52 real census tables and on six real files from other topics (consumer prices, labour force survey, national accounts, foreign trade, population, tourism). INSTAT publishes about 640 Excel files and most of them have not been tried. When a file is read wrongly, the How it was read tab shows what happened, and Export has a Report a problem file you can attach to an issue.
+- It has been run over 148 real INSTAT files: every file on 18 topic pages and a sample of the census tables. 144 could be read (4 links no longer work on INSTAT's site) and held 276 tables. In 91 % of them none of the program's own checks failed, and the rest are marked on screen as probably read wrongly.
+- A check that passes does not prove a table is right, so the numbers were also compared with 149 figures that INSTAT states in ten of its own press releases. They agree, except one cell in INSTAT's own table; the contributions of groups to inflation are approximate and agree to within 0.02 percentage points (`docs/PUBLISHED_COMPARISON.md`). INSTAT publishes about 640 Excel files and most have not been tried.
+- When a file is read wrongly, the How it was read tab shows what happened and lets you correct it, and Export has a "Report a problem" file you can attach to an issue. The method and the numbers are in `docs/EVIDENCE.md`, the known limits in `docs/LIMITATIONS.md`.
 - Windows is the only system it has been run on. Nothing in the code is Windows specific, but macOS and Linux are untested.
 - INSTAT's statistical database (PxWeb) is not supported, only the Excel and CSV files on the topic pages.
 - Tables with very deep headers get generic names for their breakdowns (`category`, `category_2`). The values are right, the names are not always meaningful.
@@ -63,13 +79,36 @@ Add `--lang sq` to any of them for Albanian, or set `INSTAT_LANG=sq`.
 ## In a computer lab
 
 - The `.exe` and the portable zip need no administrator rights and no internet. Copy them to the local disk first, not a network drive.
-- Downloaded files and exports go to `%LOCALAPPDATA%\INSTAT-Explorer` (portable zip: the `data` folder next to the program). Set `INSTAT_DATA_DIR` to use another folder.
+- Downloaded files go to `%LOCALAPPDATA%\INSTAT-Explorer` (portable zip: the `data` folder next to the program; a copy run straight from the source folder: `data` inside it). Set `INSTAT_DATA_DIR` to use another folder. An export you save from the app goes to your browser's download folder; `instat process` writes its exports to the `exports` folder inside the data folder, or to the one you give with `--out`.
 - One computer can serve a whole class: start it with `instat-explorer --share` (or `INSTAT-Explorer.exe serve --share`) and the others open the address printed in its window. Whoever has that address can use the program, so keep it inside the room.
 - The Windows files are not signed. A policy that only allows signed programs (Smart App Control, AppLocker) will refuse the `.exe` and may refuse the compiled parts of numpy and pandas as well. Ask your IT support to allow the program folder.
 
 ## Privacy
 
-Nothing leaves your computer unless you ask for a download. There are no accounts, no analytics and no update checks. The program is a small web server that listens on 127.0.0.1 only, and every request needs a random token that only the link it opens carries, so other people and other web pages on the same computer cannot use it. Spreadsheets are read with size limits, so a broken or hostile file ends in an error message instead of a crash. Uploaded files stay in memory; downloaded files and exports are kept in the data folder.
+Nothing leaves your computer unless you ask for a download. There are no accounts, no analytics and no update checks. The program is a small web server that listens on 127.0.0.1 only, and every request needs a random token that only the link it opens carries, so other people and other web pages on the same computer cannot use it. Spreadsheets are read with size limits, so a broken or hostile file ends in an error message instead of a crash. Uploaded files stay in memory; downloaded files are kept in the data folder, and so are the exports of the command line.
+
+## Development
+
+```
+python -m pip install -e ".[dev]"
+python -m pytest --cov   # no network or browser needed; about 20 seconds
+ruff check .
+mypy
+bandit -q -c pyproject.toml -r instatkit
+python tools/screenshots.py   # drives the program in Edge, Chrome or Chromium and fails on any browser error
+python tools/build_web.py --out site && python tools/screenshots.py --web site   # the web version, built and tried in a browser
+```
+
+The tests read the sample workbooks of `instatkit/demo.py`, which also return the numbers they wrote, so what the reader recovers can be
+compared with the truth cell by cell. `CHANGELOG.md` lists what changed in each version. The release files are made with
+`python packaging/build_release.py` (see `docs/DEPLOYMENT.md`); a change to the code reaches the Windows `.exe` and the zips only with the next
+release build.
+
+## More documents
+
+`docs/EVIDENCE.md` (what was tested and what it shows), `docs/GALLERY.md` (more pictures), `docs/WEB.md` (the web version), `docs/LIMITATIONS.md`, `docs/SECURITY_AND_PRIVACY.md`, `docs/DEPLOYMENT.md` (for IT and
+labs) and `docs/PROPOSAL.md` (a brief for INSTAT and other institutions). `CHANGELOG.md` lists what changed in each version. `python tools/survey.py` repeats the test on
+real files; `python tools/screenshots.py` repeats the test in a browser and makes the pictures in `docs/screenshots/`.
 
 ## Licence
 
@@ -90,6 +129,8 @@ Nuk është produkt i INSTAT-it dhe nuk ka lidhje me të. Të dhënat janë të 
 ## Si nis
 
 **Windows 10 ose 11, 64-bit.** Merr skedarin `.exe` nga faqja Releases dhe hape me dy klikime. Python është brenda, ndaj nuk ka asgjë për të instaluar. Herën e parë programi shpaketohet në dosjen tënde të përdoruesit dhe zgjat rreth një minutë; më pas hapet për pak sekonda dhe shfletuesi të shfaq aplikacionin. Windows mund të thotë se të ka mbrojtur kompjuterin, sepse skedari nuk është i nënshkruar (certifikatat kushtojnë para): kliko More info, pastaj Run anyway. Nëse kompjuteri pranon vetëm programe të nënshkruara, merr zip-in portativ nga e njëjta faqe, shpaketoje dhe hap `Start-INSTAT-Explorer.bat`.
+
+**Në shfletues, pa instaluar asgjë.** Versioni në ueb e ekzekuton të njëjtin program brenda shfletuesit: ngarko një skedar Excel ose CSV dhe lexo rezultatet. Skedarët e tu nuk dërgohen në asnjë server. Nuk mund të shkarkojë nga instat.gov.al (shfletuesit nuk e lejojnë), ndaj shkarkoje skedarin nga faqja e INSTAT-it dhe ngarkoje. Pasi të aktivizohet GitHub Pages për repozitorin, ai ndodhet te `https://<pronari>.github.io/<repozitori>/`; `docs/WEB.md` (në anglisht) shpjegon si punon dhe si vihet në një server.
 
 **Çdo sistem tjetër.** Të duhet Python 3.11 ose më i ri, 64-bit. Nga një kopje e këtij repozitori:
 
@@ -133,7 +174,9 @@ Shto `--lang sq` te cilado prej tyre për shqip, ose vendos `INSTAT_LANG=sq`.
 
 ## Çfarë duhet ditur
 
-- Është provuar në 52 tabela të vërteta të regjistrimit dhe në gjashtë skedarë të vërtetë nga tema të tjera (çmimet e konsumit, anketa e forcave të punës, llogaritë kombëtare, tregtia e jashtme, popullsia, turizmi). INSTAT-i boton rreth 640 skedarë Excel dhe shumica nuk janë provuar. Kur një skedar lexohet gabim, skeda Si u lexua tregon çfarë ndodhi, dhe te Eksporto ka një skedar "Raporto një problem" që mund ta bashkëngjitësh te një issue.
+- Është ekzekutuar mbi 148 skedarë të vërtetë të INSTAT-it: çdo skedar i 18 faqeve të temave dhe një mostër e tabelave të regjistrimit. 144 u lexuan (4 lidhje nuk punojnë më në faqen e INSTAT-it) dhe dhanë 276 tabela. Në 91 % të tyre asnjë nga kontrollet e vetë programit nuk dështoi, ndërsa të tjerat shënohen në ekran si ndoshta të lexuara gabim.
+- Një kontroll i kaluar nuk provon se një tabelë është e saktë, ndaj numrat u krahasuan edhe me 149 shifra që vetë INSTAT-i jep në dhjetë komunikata të veta për shtyp. Ato përputhen, me përjashtim të një qelize në tabelën e vetë INSTAT-it; kontributet e grupeve në inflacion janë të përafërta dhe përputhen brenda 0,02 pikë përqindjeje (`docs/PUBLISHED_COMPARISON.md`). INSTAT-i boton rreth 640 skedarë Excel dhe shumica nuk janë provuar.
+- Kur një skedar lexohet gabim, skeda Si u lexua tregon çfarë ndodhi dhe të lejon ta korrigjosh, dhe te Eksporto ka një skedar "Raporto një problem" që mund ta bashkëngjitësh te një issue. Metoda dhe numrat janë te `docs/EVIDENCE.md`, kufizimet e njohura te `docs/LIMITATIONS.md` (në anglisht).
 - Vetëm në Windows është provuar. Në kod nuk ka asgjë të veçantë për Windows, por macOS dhe Linux nuk janë provuar.
 - Baza statistikore e INSTAT-it (PxWeb) nuk mbështetet, vetëm skedarët Excel dhe CSV në faqet e temave.
 - Tabelat me koka shumë të shtresuara marrin emra të përgjithshëm për ndarjet (`category`, `category_2`). Vlerat janë të sakta, emrat jo gjithmonë kuptimplotë.
@@ -142,13 +185,13 @@ Shto `--lang sq` te cilado prej tyre për shqip, ose vendos `INSTAT_LANG=sq`.
 ## Në një laborator kompjuterik
 
 - `.exe` dhe zip-i portativ nuk kërkojnë të drejta administratori dhe as internet. Kopjoji më parë në diskun lokal, jo në një disk rrjeti.
-- Skedarët e shkarkuar dhe eksportet shkojnë te `%LOCALAPPDATA%\INSTAT-Explorer` (zip-i portativ: dosja `data` pranë programit). Me `INSTAT_DATA_DIR` zgjedh një dosje tjetër.
+- Skedarët e shkarkuar shkojnë te `%LOCALAPPDATA%\INSTAT-Explorer` (zip-i portativ: dosja `data` pranë programit; kur e nis drejtpërdrejt nga dosja e kodit burimor: `data` brenda saj). Me `INSTAT_DATA_DIR` zgjedh një dosje tjetër. Një eksport që ruan nga aplikacioni shkon te dosja e shkarkimeve e shfletuesit; `instat process` i shkruan eksportet te nëndosja `exports` e dosjes së të dhënave, ose te ajo që jep me `--out`.
 - Një kompjuter mund t'i shërbejë gjithë klasës: nise me `instat-explorer --share` (ose `INSTAT-Explorer.exe serve --share`) dhe të tjerët hapin adresën që shfaqet në dritaren e tij. Kushdo që e ka atë adresë mund ta përdorë programin, ndaj mbaje brenda klasës.
 - Skedarët për Windows nuk janë të nënshkruar. Një politikë që lejon vetëm programe të nënshkruara (Smart App Control, AppLocker) do ta refuzojë `.exe` dhe mund të refuzojë edhe pjesët e përpiluara të numpy dhe pandas. Kërkoji mbështetjes teknike që ta lejojë dosjen e programit.
 
 ## Privatësia
 
-Asgjë nuk del nga kompjuteri yt nëse nuk kërkon një shkarkim. Nuk ka llogari, analitikë apo kontrolle për përditësime. Programi është një server i vogël web që dëgjon vetëm te 127.0.0.1, dhe çdo kërkesë ka nevojë për një çelës të rastësishëm që e mban vetëm lidhja që hap programi, ndaj njerëzit e tjerë dhe faqet e tjera web në të njëjtin kompjuter nuk mund ta përdorin. Fletët e punës lexohen me kufij përmasash, kështu që një skedar i prishur ose keqdashës përfundon me një mesazh gabimi, jo me një rrëzim. Skedarët e ngarkuar mbeten në memorie; ata të shkarkuar dhe eksportet ruhen në dosjen e të dhënave.
+Asgjë nuk del nga kompjuteri yt nëse nuk kërkon një shkarkim. Nuk ka llogari, analitikë apo kontrolle për përditësime. Programi është një server i vogël web që dëgjon vetëm te 127.0.0.1, dhe çdo kërkesë ka nevojë për një çelës të rastësishëm që e mban vetëm lidhja që hap programi, ndaj njerëzit e tjerë dhe faqet e tjera web në të njëjtin kompjuter nuk mund ta përdorin. Fletët e punës lexohen me kufij përmasash, kështu që një skedar i prishur ose keqdashës përfundon me një mesazh gabimi, jo me një rrëzim. Skedarët e ngarkuar mbeten në memorie; ata të shkarkuar ruhen në dosjen e të dhënave, ashtu si eksportet e komandës.
 
 ## Licenca
 

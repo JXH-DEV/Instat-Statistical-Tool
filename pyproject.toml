@@ -19,6 +19,10 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 # three libraries, and the standard library for everything else
@@ -28,9 +32,68 @@ dependencies = [
     "xlrd>=2.0.1,<3",
 ]
 
+[project.urls]
+Homepage = "https://github.com/JXH-DEV/Instat-Statistical-Tool"
+Issues = "https://github.com/JXH-DEV/Instat-Statistical-Tool/issues"
+Changelog = "https://github.com/JXH-DEV/Instat-Statistical-Tool/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+# tools for working on the program itself; none of them is needed to run it
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "bandit>=1.7",
+    "openpyxl>=3.1",     # opens the exported workbooks in the tests, as Excel would
+    "xlwt>=1.3",         # writes the small .xls fixture the old-format reader is tested with
+    "build>=1.2",
+    "websockets>=13",    # tools/screenshots.py drives a real browser (Edge, Chrome or Chromium) with it
+    "pypdf>=4",          # tools/check_published.py reads the figures INSTAT states in its PDF press releases with it
+]
+
 [project.scripts]
 instat = "instatkit.cli:main"
 instat-explorer = "instatkit.cli:app_main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+filterwarnings = ["error::DeprecationWarning:instatkit", "error::FutureWarning"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["instatkit"]
+ignore_missing_imports = true   # pandas and numpy are used without their stub packages
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unreachable = false
+
+[tool.coverage.run]
+source = ["instatkit"]
+branch = false
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 89  # measured 90.4 %: the floor stops it from sliding, it is not a goal
+
+[tool.bandit]
+# the program is scanned (tools/ and packaging/ are developer scripts that start processes on purpose)
+exclude_dirs = ["tests", "tools", "packaging"]
+skips = ["B311"]  # `random` makes the invented demo numbers; nothing security-related uses it
+
+[tool.ruff]
+target-version = "py311"
+line-length = 150
+extend-exclude = ["data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4", "RUF100"]
+ignore = ["E501", "B905"]  # long lines are a deliberate style here; zip() without strict= is fine
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]
 
 [tool.setuptools.dynamic]
 version = { attr = "instatkit.__version__" }
