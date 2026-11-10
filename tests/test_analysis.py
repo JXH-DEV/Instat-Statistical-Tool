@@ -32,8 +32,7 @@ def months(n: int, start=(2020, 1)):
     return out
 
 
-# --- statistics ---------------------------------------------------------------------------------------------------
-
+# --- statistics ---
 def test_too_little_data_gives_no_statistics():
     assert compute_series_stats(months(1), np.array([1.0])) is None
     assert compute_series_stats(months(5), np.full(5, np.nan)) is None
@@ -106,8 +105,7 @@ def test_a_positive_level_is_described_in_percent():
     assert st.pct_changes and "anomaly" in facts and "%" in facts["anomaly"].text
 
 
-# --- number and period formatting ----------------------------------------------------------------------------------
-
+# --- number and period formatting ---
 @pytest.mark.parametrize("fn", [fmt_pct, fmt_pp])
 def test_missing_numbers_are_never_written_as_nan(fn):
     for bad in (float("nan"), float("inf"), float("-inf"), None):
@@ -135,8 +133,7 @@ def test_labels_in_the_facts_use_the_calendar_not_a_guess():
     assert from_label("2005-06").freq == "M"
 
 
-# --- sentences from real tables -------------------------------------------------------------------------------------
-
+# --- sentences from real tables ---
 def _trade_workbook(n=30, missing_last_import=False, zero_imports=False):
     wb = Writer()
     ws = wb.active
@@ -220,8 +217,7 @@ def test_charts_for_every_demo_render():
             assert not JUNK.search(re.sub(r"<[^>]+>", " ", c.svg)), (name, c.title)
 
 
-# --- JSON for the browser -------------------------------------------------------------------------------------------
-
+# --- JSON for the browser ---
 def test_replies_are_always_valid_json():
     """``json.dumps`` writes NaN and Infinity, which JSON.parse in the browser rejects."""
     payload = {"a": float("nan"), "b": [float("inf"), 1.5, np.float64("nan")], "c": np.int64(3), "d": {"e": float("-inf")},

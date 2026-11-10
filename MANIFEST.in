@@ -4,6 +4,6 @@ include SECURITY.md
 include .gitattributes
 recursive-include tests *.py
 recursive-include docs *.md *.png
-recursive-include tools *.py
+recursive-include tools *.py *.json
 recursive-include packaging *.py *.cs *.txt *.bat *.sh *.command
 recursive-include webapp *.js

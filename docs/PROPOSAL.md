@@ -38,8 +38,12 @@ This is a real INSTAT census table in the old `.xls` format: twelve sheets, one 
   births, tourism ...) were worked out from the Excel tables and compared with what INSTAT states. 140 are equal after rounding, 1 equal when INSTAT's
   rounded levels are used, 7 close (approximate by design) and 1 differs, a cell in INSTAT's own table. The comparison also found two reading defects in
   the program, now fixed, that no internal check could detect (`docs/PUBLISHED_COMPARISON.md`).
-* 469 automated tests (90 % of the code), including the exact recovery of known numbers from seven synthetic workbooks that imitate INSTAT
-  layouts, the handling of broken and hostile files, and the part that talks to the internet tested against played-back answers.
+* 1,941 automated tests (96 % of the statements and branches), including the exact recovery of known numbers from seven synthetic workbooks that imitate INSTAT
+  layouts, the handling of broken and hostile files, the exact wording of the findings, and the part that talks to the internet tested against
+  played-back answers. How well they would notice a mistake was measured, not assumed: of 242 deliberate mistakes put into eleven core
+  modules (a fresh sample, before the last tests were written), the tests notice 74 % (the first version of the tests noticed 43 % of a smaller set); the
+  weakest parts are the table-layout reader (41 %) and the interpretation of titles and headers (45 %), which are checked mainly by running them over
+  real files (`docs/EVIDENCE.md`, section 5).
 * Every screen checked in a real browser, in both languages, light and dark and at phone width, with no console error, failed request or
   security-policy violation (`tools/screenshots.py`; the pictures are in `docs/screenshots/`).
 * Security and privacy by design: local only, an access token, no telemetry (see `SECURITY_AND_PRIVACY.md`).

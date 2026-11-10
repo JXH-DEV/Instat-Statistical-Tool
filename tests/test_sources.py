@@ -580,3 +580,47 @@ def test_the_manifest_can_live_in_memory():
     with store.connect(":memory:") as conn:
         store.record_download(conn, url="u", sha256="s", path="p", size=1, status=200)
         assert store.get_download(conn, "u")["sha256"] == "s"
+
+
+# plain bodies and metadata
+
+def test_a_body_is_returned_whole(make):
+    fetcher, _ = make(reply(200, b"abc" * 10))
+    assert fetcher.get_bytes(FILE) == b"abc" * 10
+
+
+def test_a_body_over_the_limit_is_refused(make):
+    fetcher, _ = make(reply(200, b"x" * 5000))
+    with pytest.raises(FetchError) as caught:
+        fetcher.get_bytes(FILE, limit=4000)
+    assert str(caught.value) == "The file is over the limit of 0 MB."
+    fetcher, _ = make(reply(200, b"x" * 4000))
+    assert len(fetcher.get_bytes(FILE, limit=4000)) == 4000                                       # exactly the limit is fine
+
+
+def test_a_body_that_is_not_ok_says_which_status(make):
+    fetcher, _ = make(reply(404, b"gone"))
+    with pytest.raises(FetchError) as caught:
+        fetcher.get_bytes(FILE)
+    assert str(caught.value) == "The server answered with HTTP 404." and caught.value.status == 404
+
+
+@pytest.mark.parametrize("content_range, size", [("bytes 0-0/12345", 12345), ("bytes 0-0/*", None), ("", None), ("garbage", None)])
+def test_the_size_is_read_from_the_content_range_when_head_is_refused(make, content_range, size):
+    headers = {"content_range": content_range} if content_range else {}
+    fetcher, _ = make(reply(405, b""), reply(206, b"x", **headers))
+    info = fetcher.head(FILE)
+    assert info.size == size and info.status == 206
+
+
+def test_the_size_of_a_head_answer_comes_from_content_length(make):
+    fetcher, _ = make(reply(200, b"", content_length="4096", last_modified="Mon, 01 Jan 2024 00:00:00 GMT"))
+    info = fetcher.head(FILE)
+    assert (info.size, info.status, info.last_modified) == (4096, 200, "Mon, 01 Jan 2024 00:00:00 GMT")
+    fetcher, _ = make(reply(200, b"", content_length="many"))
+    assert fetcher.head(FILE).size is None
+
+
+def test_hosts_of_malformed_addresses_are_none():
+    assert fetch.host_of("http://[::1/") is None and fetch.host_of("https://www.instat.gov.al/x") == "www.instat.gov.al"
+    assert fetch.host_of("not an address") is None

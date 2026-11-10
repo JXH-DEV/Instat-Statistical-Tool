@@ -28,9 +28,24 @@ Other limits of the reading:
 * Inflation contributions are approximate: they use the published weights and ignore chain-linking.
 * The findings come from fixed rules. They describe what the numbers did, never why; the "possible context" next to an unusual month is a short
   list of known events, not an explanation. Check anything you plan to publish against INSTAT's own publication.
+* Known weak spots of those rules, found by trying odd series and not yet changed:
+  * a series with two regimes (a long flat stretch, then a long stretch of small steady changes) can report the first step of the second regime as
+    "unusually large", although it is small;
+  * a smooth series with a kink can be called seasonal when the gap between its best and worst month is only about 1 %;
+  * a trend over a few months is also stated per year, which can give very large figures (hundreds of percent) that mean little;
+  * a figure that falls exactly halfway between two roundings is rounded to the even digit (6.25 is written 6.2);
+  * a percentage written in brackets, `(5%)`, is text, not a number.
 
 ## The program
 
+* **How far the tests can be trusted.** 1,941 tests pass and cover 96 % of the statements and branches, but running a line is not checking it. When one operator
+  or number is changed at a time in eleven core modules (`tools/mutation_test.py`, `docs/EVIDENCE.md` section 5), a fresh sample showed the tests
+  notice about three changes in four, but only 9 of 22 in `excel/layout.py` (the part that finds the table in a sheet) and 10 of 22 in
+  `semantics/interpret.py` (titles, units, measures); those two have not had a second round of tests. Their real protection is `tools/survey.py`
+  over 148 real files, which needs the internet for the first download (after that `--offline --check tools/survey_baseline.json` compares every
+  file with how it was read before) and is not part of the test run or of the CI. The readers for `.xls`, `.xlsx` and SpreadsheetML are
+  covered 72 %, 75 % and 65 %. The wording of the findings is pinned by tests for a few dozen made-up series, not for every shape a real series can
+  take. The CI has not run, and nothing has been run on macOS, Linux or a Python other than 3.14.
 * **Platforms.** Tested on Windows only, on Python 3.14. Nothing in the code is Windows-specific and the syntax is checked against Python 3.11,
   but macOS, Linux and Python 3.11–3.13 are untested until the CI in `.github/workflows/ci.yml` is run.
 * **One person at a time.** It is a local application, not a multi-user service. `--share` lets a class use one computer's copy over plain

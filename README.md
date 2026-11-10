@@ -91,7 +91,7 @@ Nothing leaves your computer unless you ask for a download. There are no account
 
 ```
 python -m pip install -e ".[dev]"
-python -m pytest --cov   # no network or browser needed; about 20 seconds
+python -m pytest --cov   # no network or browser needed; about 25 seconds
 ruff check .
 mypy
 bandit -q -c pyproject.toml -r instatkit

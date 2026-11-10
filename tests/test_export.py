@@ -187,8 +187,7 @@ def test_hostile_text_is_escaped_everywhere():
     assert all(c.data_type == "s" for c in cells)
 
 
-# --- the hand-written XLSX writer -----------------------------------------------------------------------------------
-
+# --- the hand-written XLSX writer ---
 def test_numpy_numbers_are_written_as_numbers():
     """numpy scalars are written as numbers, not as their repr or as text."""
     assert _cell_xml("A1", np.float64(1.5), 0, 1) == '<c r="A1"><v>1.5</v></c>'

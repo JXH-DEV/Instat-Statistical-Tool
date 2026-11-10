@@ -121,9 +121,9 @@ while this was being tested). `docs/LIMITATIONS.md` says what is wrong with each
 
 ## 5. Automated tests
 
-469 tests, about 20 seconds, no network and no browser needed. They cover 90.4 % of the program's code. `mypy` (types) and `bandit` (security
-lint) find nothing; `ruff` finds nothing; the CI workflow runs all of them on Windows, macOS and Linux (that workflow has not run yet: nothing has
-been pushed):
+1,941 tests, about 40 seconds, no network and no browser needed. They run 96 % of the program's statements and branches together
+(`pytest --cov`; the floor in `pyproject.toml` is 88 %). `mypy` (types), `bandit` (security lint) and `ruff` find nothing; the CI workflow
+runs all of them on Windows, macOS and Linux (that workflow has not run yet: nothing has been pushed):
 
 * the reader recovers **exactly** the numbers written into seven synthetic workbooks that imitate INSTAT layouts (consumer prices,
   labour force survey, national accounts with cover and contents sheets, foreign trade, population with a two-level header, tourism,
@@ -137,7 +137,81 @@ been pushed):
   local or private address, not through a redirect or a look-alike host name either; it refuses error pages sent as files, over-large files
   and over-large pages, retries throttling with a growing pause, remembers files by their content, and never reads outside its folder;
 * repeated sheets and blocks (a sheet per prefecture, a block per sex) are combined into one table with every number checked cell by cell,
-  and left apart when their titles, layouts or block names differ.
+  and left apart when their titles, layouts or block names differ;
+* the words of the findings (the highest, the lowest, a change of pattern, a ranking, a gap, the movers) are pinned for made-up series whose right
+  sentence is known, with the thresholds at which a sentence appears or disappears.
+
+### Do the tests notice a mistake?
+
+A test run that passes says nothing unless the tests would fail when the program is wrong, and "96 % covered" only says that a line ran. So the
+tests were also measured the other way round. `tools/mutation_test.py` takes a copy of the program and changes one comparison, arithmetic or
+boolean operator, one `not` or one number in a module (`>` becomes `>=`, `+` becomes `-`, `30` becomes `31`), then runs all the tests. A change that
+makes a test fail is *noticed*; one that leaves every test green is a *survivor*: a place where a wrong program would have passed. The places are a
+random sample (22 per module, the same seed gives the same places) from the eight modules that decide what the program says about a table:
+
+| module | what it does | places in it | the first 469 tests notice | the tests of 0.10.1 notice |
+| --- | --- | --- | --- | --- |
+| `semantics/numbers.py` | reads a cell as a number or a marker | 37 | 18 of 22 | 19 of 22 |
+| `semantics/units.py` | unit, scale and base of an index | 53 | 13 of 22 | 21 of 22 |
+| `semantics/periods.py` | months, quarters, years in headers | 360 | 13 of 22 | 16 of 22 |
+| `analysis/checks.py` | the consistency checks | 133 | **1 of 22** | 18 of 22 |
+| `analysis/series.py` | trend, seasons, jumps, outliers | 370 | 5 of 22 | 18 of 22 |
+| `analysis/insights.py` | the sentences of the findings | 185 | 5 of 22 | 15 of 22 (22 of 22 after tests were added for the seven that got through) |
+| `excel/tidy.py` | from a located table to tidy rows | 188 | 13 of 22 | 16 of 22 |
+| `excel/layout.py` | finds headers, labels and data in a sheet | 1,121 | 7 of 22 | **11 of 22** |
+| **all** | | | **75 of 176 (43 %)** | **134 of 176 (76 %)**; 141 (80 %) counting those seven |
+
+The results were measured with 991 of the 1,008 tests that existed then; 933 tests have been added since.
+
+**A fresh sample (seed 31), drawn on the tests as they were before the last round was written**, over eleven modules (the eight above, plus
+`analysis/recipes.py`, `analysis/fmt.py` and `semantics/interpret.py`). Nothing was fixed after seeing it, so it is the honest figure:
+
+| module | noticed | | module | noticed |
+| --- | --- | --- | --- | --- |
+| `analysis/recipes.py` | **5 of 22** | | `analysis/insights.py` | 20 of 22 |
+| `semantics/interpret.py` | **10 of 22** | | `semantics/periods.py` | 20 of 22 |
+| `excel/layout.py` | **9 of 22** | | `analysis/checks.py` | 20 of 22 |
+| `analysis/series.py` | 17 of 22 | | `semantics/numbers.py`, `semantics/units.py` | 21 of 22 each |
+| `analysis/fmt.py` | 18 of 22 | | `excel/tidy.py` | 19 of 22 |
+| **all** | | | **180 of 242 (74 %)** |
+
+`analysis/recipes.py` (the inflation contributions, the national-accounts identities, the trade balance, the age structure, youth unemployment and
+the pay gap) had almost no value-based tests; `tests/test_recipes.py` now checks every figure against the demo builders' own truth. All 17 survivors
+of that sample are noticed (one change, `nunique() <= 1` to `< 1` in `_one_measure`, makes no difference and cannot be), and so are the neighbouring
+changes tried by hand except one that only changes the wording for exactly equal pay. Writing the tests found one defect (a measure blank in every
+period stopped the GDP and trade checks). **`excel/layout.py` and `semantics/interpret.py` have not had a second round of tests.** Other places
+known to make no difference: the `rfind` comparison in `semantics/numbers.py`, the start of `_PROV_LETTER` in `periods.py`, `maxsplit` in
+`units.py`, `b > 0` after `|t| >= 2` in `series.py`, and the swap when `lo == hi` in `web/api.py`.
+
+What this showed:
+
+* The first set of tests was mostly imitation. It ran the code, and it checked that the program did not crash and that the demo tables came out
+  right, but it asserted almost nothing about the consistency checks (1 of 22 changes noticed), the trend and outlier statistics (5 of 22) or the
+  wording of the findings (5 of 22). A program whose checks were wrong would have passed.
+* Tests were then written for the survivors, with the right answer worked out by hand each time. They found eight real defects, which are fixed
+  (`CHANGELOG.md`, 0.10.1): the Albanian word `përqindje` was not a percentage; an index "December of the previous year = 100" or "same month of
+  the previous year = 100" was read as "previous year = 100"; month and quarter names written in both languages in one cell (`Janar / January`)
+  were not read as months; a series that rises by the same step every month was reported to have "unusual" months (rounding noise of 1e-16) and,
+  because a steady rise splits into a low half and a high half, "a change of pattern"; the swing of the seasons was reported as a change of
+  pattern too; a ranking of three categories named the middle one as both the highest and the lowest; a value of exactly zero was written
+  `ALL 0.0000`. None of them changes the clean data of the 148 real files (their tidy output is identical, file by file).
+* The first tests were written looking at the survivors of one sample (seed 7), so the improvement on that sample is flattering (44 % to 89 %,
+  six modules). A sample drawn afterwards with another seed (11) gave 64 % over seven modules. The table is a third sample (seed 23), drawn
+  after the main rounds of test-writing; some tests were added later for what it showed, so it is not a clean hold-out either. Read 76 % as
+  "about three changes in four", not as a measurement to the percent.
+* What is still weak. **`excel/layout.py`, the part that finds the table in a sheet, is noticed in only 11 of 22 places**; it has 1,121 places and
+  most survivors there are thresholds and conditions for particular sheet shapes. Its real protection is `tools/survey.py` over the 148 real
+  files (section 1), which needs the internet and is not part of `pytest` or of the CI. The readers for `.xls`, `.xlsx` and SpreadsheetML are
+  covered 72 %, 75 % and 65 %. Most survivors in the other modules are boundary values (`>` where `>=` was meant, the year 1900 against 1901) and
+  conditions that need a particular sheet shape; they are the next tests to write.
+* A sample is not the whole module: 176 of about 2,450 places were tried. The scores are estimates (22 places per module give a margin of
+  roughly ±20 points, the 176 together roughly ±7); they show the order of magnitude and where to look, not a precise figure.
+
+To repeat it on a module you changed (it works on a copy and never touches the repository):
+
+```
+python tools/mutation_test.py ../copy-of-the-repository instatkit/analysis/checks.py --count 22 --seed 7 --out checks.json
+```
 
 ## 6. The interface
 
@@ -165,6 +239,7 @@ same browser journey as the local program (`python tools/screenshots.py --web si
 ```
 python -m pip install -e ".[dev]"
 python -m pytest --cov                    # section 5
+python tools/mutation_test.py COPY instatkit/analysis/checks.py   # section 5: do the tests notice a mistake? (COPY = a copy of this folder)
 mypy && bandit -q -c pyproject.toml -r instatkit   # section 5: types and security lint
 python tools/survey.py                    # sections 1, 3 and 4: downloads ~150 files from instat.gov.al and prints what it made of them
 python tools/survey.py --census 0         # without the census tables

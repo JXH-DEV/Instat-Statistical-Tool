@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+import tempfile
 import zipfile
 
 import pytest
@@ -159,8 +160,10 @@ def test_ensure_data_dir_falls_back_to_a_temporary_folder(monkeypatch, tmp_path)
     saved = config.DATA_DIR, config.RAW_DIR, config.EXPORT_DIR, config.DB_PATH
     try:
         monkeypatch.setattr(config, "DATA_DIR", blocker / "inside")
+        monkeypatch.setattr(tempfile, "gettempdir", lambda: str(tmp_path / "temp"))     # not the real one: test runs at the same time would share it
         assert config.ensure_data_dir() is False
-        assert config.DATA_DIR.exists() and config.EXPORT_DIR.parent == config.DATA_DIR
+        assert config.DATA_DIR == tmp_path / "temp" / "INSTAT-Explorer" and config.EXPORT_DIR.parent == config.DATA_DIR
+        assert config.DATA_DIR.is_dir() and list(config.DATA_DIR.iterdir()) == []             # the write test leaves nothing behind
     finally:
         config.DATA_DIR, config.RAW_DIR, config.EXPORT_DIR, config.DB_PATH = saved
 

@@ -288,8 +288,7 @@ def test_code_columns_beside_the_names_do_not_swallow_the_rows():
     assert not any("duplicate" in c.key and c.status == "fail" for c in pf.tables[0].analysis.checks)
 
 
-# --- layouts found in real INSTAT files (each of these was read wrongly before) ---------------------------------------------
-
+# --- layouts found in real INSTAT files (each of these was read wrongly before) ---
 def _no_collisions(pf):
     assert pf.ok, pf.errors
     for pt in pf.tables:

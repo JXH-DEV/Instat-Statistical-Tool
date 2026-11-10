@@ -84,8 +84,7 @@ def gdp(srv):
     return srv.json(*srv.post("/api/demo", {"name": "gdp"}))["key"]
 
 
-# --- who may use it ------------------------------------------------------------------------------------------------
-
+# --- who may use it ---
 def test_health_needs_no_token(srv):
     assert srv.get("/health", auth=False)[0] == 200
 
@@ -128,8 +127,29 @@ def test_port_zero_and_a_busy_port(srv):
         assert server.server_address[1] != srv.port
     finally:
         server.server_close()
-    server, _app = web.start(65535)                      # the last port: no OverflowError from the search
-    server.server_close()
+    try:
+        server, _app = web.start(65535)                  # the last port: no OverflowError from the search
+    except OSError as problem:                           # another test run on this computer may hold that one port at this moment
+        assert "No free port near 65535" in str(problem)
+    else:
+        server.server_close()
+
+
+def test_when_every_port_in_reach_is_taken_the_message_says_so(monkeypatch):
+    attempts = []
+
+    def refuse(address, handler):
+        attempts.append(address[1])
+        raise OSError("in use")
+
+    monkeypatch.setattr(web, "_Server", refuse)
+    with pytest.raises(OSError, match="No free port near 8501"):
+        web.start(8501)
+    assert attempts == list(range(8501, 8521))           # twenty ports, then it gives up
+    attempts.clear()
+    with pytest.raises(OSError, match="No free port near 65530"):
+        web.start(65530)
+    assert attempts == list(range(65530, 65536))         # and it never asks for a port above 65535
 
 
 def test_dns_rebinding_is_refused(srv):
@@ -155,8 +175,7 @@ def test_other_methods_and_unknown_paths(srv):
     assert srv.get("/favicon.ico")[0] == 204
 
 
-# --- limits --------------------------------------------------------------------------------------------------------
-
+# --- limits ---
 def test_body_limits_and_bad_json(srv):
     status, headers, data = srv.request("POST", "/api/resolve", body=b"x" * (web.MAX_JSON + 1), headers={"Content-Type": "application/json"})
     assert status == 413 and "limit" in json.loads(data)["error"]
@@ -183,12 +202,15 @@ def test_unauthenticated_uploads_are_not_waited_for(srv):
     import time
 
     t0 = time.perf_counter()
-    status, _h, _d = srv.request("POST", "/api/upload", body=b"x" * 200_000, auth=False, headers={"X-Filename": "a.xlsx"})
+    try:
+        status = srv.request("POST", "/api/upload", body=b"x" * 200_000, auth=False, headers={"X-Filename": "a.xlsx"})[0]
+    except ConnectionError:  # Windows may reset the connection on the unread body before the client has read the 403: refused at once all the same
+        status = 403
     assert status == 403 and time.perf_counter() - t0 < 3
+    assert srv.get("/health")[0] == 200                                                      # and the server is still there
 
 
-# --- the page --------------------------------------------------------------------------------------------------------
-
+# --- the page ---
 def test_start_page_and_assets(srv):
     status, headers, body = srv.get("/")
     assert status == 200 and headers["content-type"].startswith("text/html")
@@ -217,8 +239,7 @@ def test_accept_language_picks_albanian(srv):
     assert lang["language"] == "sq"
 
 
-# --- the app -------------------------------------------------------------------------------------------------------
-
+# --- the app ---
 def test_search_and_resolve(srv):
     r = srv.json(*srv.post("/api/resolve", {"q": "inflation"}))
     assert r["kind"] == "topics" and r["hits"] and all(h["url"].startswith("https://www.instat.gov.al") for h in r["hits"])
@@ -363,8 +384,7 @@ def test_closing_files(srv):
     assert srv.get(f"/api/table?key={key}&i=0")[0] == 404
 
 
-# --- bad input is a message, not a crash -------------------------------------------------------------------------------
-
+# --- bad input is a message, not a crash ---
 @pytest.mark.parametrize("path", [
     "/api/table?key=nope&i=0", "/api/table?i=0", "/api/data?key=nope&i=0", "/api/read?key=nope&i=0", "/api/quality?key=nope&i=0",
     "/export?key=nope&i=0&kind=tidy"])
@@ -405,8 +425,7 @@ def test_corrections_are_validated_and_never_lose_the_table(srv):
     assert srv.json(*srv.get(f"/api/read?key={key}&i=0"))["override"]["active"] is False
 
 
-# --- concurrency, files kept, shutdown --------------------------------------------------------------------------------
-
+# --- concurrency, files kept, shutdown ---
 def test_many_requests_at_once(srv, cpi):
     def hit(i):
         path = [f"/api/table?key={cpi}&i=0", f"/api/data?key={cpi}&i=0&page={i % 4}", f"/api/quality?key={cpi}&i=0", "/api/state"][i % 4]

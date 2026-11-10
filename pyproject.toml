@@ -72,12 +72,12 @@ warn_unreachable = false
 
 [tool.coverage.run]
 source = ["instatkit"]
-branch = false
+branch = true
 
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-fail_under = 89  # measured 90.4 %: the floor stops it from sliding, it is not a goal
+fail_under = 88  # measured 89.6 % with branches (91.9 % of the statements): the floor stops it from sliding, it is not a goal
 
 [tool.bandit]
 # the program is scanned (tools/ and packaging/ are developer scripts that start processes on purpose)

@@ -147,3 +147,18 @@ def test_quarters_written_as_roman_numerals(text, label):
 @pytest.mark.parametrize("text", ["II", "IV", "I", "III", "II/", "V 2023", "VI/23", "XI/23", "I/2", "I - II", "Total"])
 def test_a_roman_numeral_alone_or_a_non_quarter_is_not_a_period(text):
     assert parse_period(text) is None, "a numbered row label must not turn into a period"
+
+
+def test_a_month_and_year_must_be_between_1900_and_2099():
+    from instatkit.semantics.periods import _month_year_from_tokens
+
+    assert _month_year_from_tokens("5", "1900").label == "1900-05" and _month_year_from_tokens("5", "2099").label == "2099-05"
+    assert _month_year_from_tokens("5", "1899") is None and _month_year_from_tokens("5", "2100") is None
+    assert _month_year_from_tokens("5", "1000") is None and _month_year_from_tokens("13", "2020") is None
+
+
+def test_a_year_first_pair_is_the_first_month_with_the_second_as_its_base():
+    p = parse_period("2022-05 / 2021-05")
+    assert (p.label, p.freq, p.start, p.end) == ("2022-05", "M", date(2022, 5, 1), date(2022, 5, 31))
+    assert (p.base.label, p.base.start) == ("2021-05", date(2021, 5, 1))
+    assert parse_period("2022-13 / 2021-05") is None
