@@ -1,7 +1,3 @@
-# Pictures of the program
-
-Made by `python tools/screenshots.py`, which drives the stand-alone program in a real browser. The demo uses invented numbers; the pictures of real
-INSTAT files are marked.
 
 ## The tabs
 
