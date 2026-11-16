@@ -1,0 +1,341 @@
+sq,en,tag
+Gjithsej,Total,total
+Totali,Total,total
+Total,Total,total
+Të gjitha,All,total
+Të gjithë,All,total
+Shqipëria,Albania,total
+Shqipëri,Albania,total
+Të dy gjinitë,Both sexes,total
+Meshkuj,Males,sex
+Femra,Females,sex
+Burra,Men,sex
+Gra,Women,sex
+Mashkull,Male,sex
+Femër,Female,sex
+M,Male,sex
+F,Female,sex
+Djem,Boys,sex
+Vajza,Girls,sex
+Urban,Urban,urban_rural
+Rural,Rural,urban_rural
+Urbane,Urban,urban_rural
+Rurale,Rural,urban_rural
+Zona urbane,Urban areas,urban_rural
+Zona rurale,Rural areas,urban_rural
+Berat,Berat,county
+Dibër,Diber,county
+Durrës,Durres,county
+Elbasan,Elbasan,county
+Fier,Fier,county
+Gjirokastër,Gjirokaster,county
+Korçë,Korce,county
+Kukës,Kukes,county
+Lezhë,Lezhe,county
+Shkodër,Shkoder,county
+Tiranë,Tirana,county
+Vlorë,Vlore,county
+Belsh,Belsh,municipality
+Bulqizë,Bulqize,municipality
+Cërrik,Cerrik,municipality
+Delvinë,Delvine,municipality
+Devoll,Devoll,municipality
+Dimal,Dimal,municipality
+Divjakë,Divjake,municipality
+Dropull,Dropull,municipality
+Finiq,Finiq,municipality
+Fushë-Arrëz,Fushe-Arrez,municipality
+Gramsh,Gramsh,municipality
+Has,Has,municipality
+Himarë,Himare,municipality
+Kamëz,Kamez,municipality
+Kavajë,Kavaje,municipality
+Këlcyrë,Kelcyre,municipality
+Klos,Klos,municipality
+Kolonjë,Kolonje,municipality
+Konispol,Konispol,municipality
+Krujë,Kruje,municipality
+Kuçovë,Kucove,municipality
+Kurbin,Kurbin,municipality
+Libohovë,Libohove,municipality
+Librazhd,Librazhd,municipality
+Lushnjë,Lushnje,municipality
+Malësi e Madhe,Malesi e Madhe,municipality
+Maliq,Maliq,municipality
+Mallakastër,Mallakaster,municipality
+Mat,Mat,municipality
+Memaliaj,Memaliaj,municipality
+Mirditë,Mirdite,municipality
+Patos,Patos,municipality
+Peqin,Peqin,municipality
+Përmet,Permet,municipality
+Pogradec,Pogradec,municipality
+Poliçan,Polican,municipality
+Prrenjas,Prrenjas,municipality
+Pukë,Puke,municipality
+Pustec,Pustec,municipality
+Roskovec,Roskovec,municipality
+Rrogozhinë,Rrogozhine,municipality
+Sarandë,Saranda,municipality
+Selenicë,Selenice,municipality
+Shijak,Shijak,municipality
+Skrapar,Skrapar,municipality
+Tepelenë,Tepelene,municipality
+Tropojë,Tropoje,municipality
+Vau i Dejës,Vau i Dejes,municipality
+Vorë,Vore,municipality
+Janar,January,month
+Shkurt,February,month
+Mars,March,month
+Prill,April,month
+Maj,May,month
+Qershor,June,month
+Korrik,July,month
+Gusht,August,month
+Shtator,September,month
+Tetor,October,month
+Nëntor,November,month
+Dhjetor,December,month
+Tremujori,Quarter,period_word
+Tremujori i parë,First quarter,period_word
+Tremujori i dytë,Second quarter,period_word
+Tremujori i tretë,Third quarter,period_word
+Tremujori i katërt,Fourth quarter,period_word
+Viti,Year,period_word
+Muaji,Month,period_word
+Periudha,Period,period_word
+Mosha,Age,age
+Grupmosha,Age group,age
+Grupmoshat,Age groups,age
+Grup-mosha,Age group,age
+Vjeç e lart,Years and over,age
+Vjeç,Years,age
+Kodi,Code,misc
+Grupet,Groups,misc
+Peshat,Weights,misc
+Gjinia,Sex,misc
+Shënim,Note,misc
+Burimi,Source,misc
+Vlera,Value,misc
+Të tjera,Other,total
+Të tjerë,Others,total
+Të tjerat,Others,total
+Vende të tjera,Other countries,total
+Pa arsim,No education,education
+Arsimi fillor,Primary education,education
+Arsimi 9-vjeçar,Lower secondary education,education
+Arsimi i mesëm,Secondary education,education
+Arsimi i lartë,Higher education,education
+Arsimi universitar,University education,education
+Të punësuar,Employed,status
+Të papunë,Unemployed,status
+Të papunët,Unemployed,status
+Joaktiv,Inactive,status
+Joaktivë,Inactive,status
+Fuqia punëtore,Labour force,status
+Forca e punës,Labour force,status
+Shkalla e punësimit,Employment rate,status
+Shkalla e papunësisë,Unemployment rate,status
+Shkalla e pjesëmarrjes në forcat e punës,Labour force participation rate,status
+Papunësia afatgjatë,Long-term unemployment,status
+Të rinjtë,Youth,status
+Bujqësia,Agriculture,sector
+Industria,Industry,sector
+Shërbimet,Services,sector
+Ndërtimi,Construction,sector
+Tregtia,Trade,sector
+Transporti,Transport,sector
+Turizmi,Tourism,sector
+Arsimi,Education,sector
+Shëndetësia,Health,sector
+Energjia,Energy,sector
+Publik,Public,ownership
+Privat,Private,ownership
+Sektori publik,Public sector,ownership
+Sektori privat,Private sector,ownership
+Eksporte,Exports,trade
+Importe,Imports,trade
+Eksporti,Exports,trade
+Importi,Imports,trade
+Bilanci tregtar,Trade balance,trade
+Përqindja e mbulimit,Coverage ratio,trade
+Qarkullimi i mallrave,Flow of goods,trade
+Prodhimi,Output,national_accounts
+Konsumi ndërmjetës,Intermediate consumption,national_accounts
+Vlera e shtuar bruto,Gross value added,national_accounts
+Taksa neto mbi produktet,Net taxes on products,national_accounts
+Produkti i brendshëm bruto,Gross domestic product,national_accounts
+Prodhimi i brendshëm bruto,Gross domestic product,national_accounts
+PBB,GDP,national_accounts
+Indeksi i çmimeve të konsumit,Consumer price index,prices
+Ushqime dhe pije,Food and beverages,coicop
+Ushqime dhe pije joalkoolike,Food and non-alcoholic beverages,coicop
+Ushqime dhe pije jo-alkoolike,Food and non-alcoholic beverages,coicop
+Ushqime,Food,coicop
+Pije alkoolike dhe duhan,Alcoholic beverages and tobacco,coicop
+Veshje dhe këpucë,Clothing and footwear,coicop
+Veshmbathje dhe këpucë,Clothing and footwear,coicop
+Shëndetësi,Health,coicop
+Komunikimi,Communication,coicop
+Rekreacion dhe kulturë,Recreation and culture,coicop
+Restorante dhe hotele,Restaurants and hotels,coicop
+Shërbime akomodimi,Accommodation services,coicop
+Mallra dhe shërbime të tjera,Miscellaneous goods and services,coicop
+Kujdes personal,Personal care,coicop
+Italia,Italy,country
+Greqia,Greece,country
+Turqia,Turkey,country
+Kina,China,country
+Gjermania,Germany,country
+Kosova,Kosovo,country
+Serbia,Serbia,country
+Spanja,Spain,country
+Franca,France,country
+Zvicra,Switzerland,country
+Maqedonia e Veriut,North Macedonia,country
+Maqedonia,Macedonia,country
+Mali i Zi,Montenegro,country
+Bullgaria,Bulgaria,country
+Rumania,Romania,country
+Kroacia,Croatia,country
+Sllovenia,Slovenia,country
+Austria,Austria,country
+Belgjika,Belgium,country
+Holanda,Netherlands,country
+Mbretëria e Bashkuar,United Kingdom,country
+Britania e Madhe,United Kingdom,country
+SHBA,USA,country
+Shtetet e Bashkuara,United States,country
+Rusia,Russia,country
+Ukraina,Ukraine,country
+Polonia,Poland,country
+Hungaria,Hungary,country
+Republika Çeke,Czech Republic,country
+Sllovakia,Slovakia,country
+Suedia,Sweden,country
+Danimarka,Denmark,country
+Norvegjia,Norway,country
+Finlanda,Finland,country
+Portugalia,Portugal,country
+Irlanda,Ireland,country
+Egjipti,Egypt,country
+India,India,country
+Japonia,Japan,country
+Koreja e Jugut,South Korea,country
+Izraeli,Israel,country
+Kanadaja,Canada,country
+Brazili,Brazil,country
+Bosnja dhe Hercegovina,Bosnia and Herzegovina,country
+Bjellorusia,Belarus,country
+Lituania,Lithuania,country
+Letonia,Latvia,country
+Estonia,Estonia,country
+Luksemburgu,Luxembourg,country
+Qipro,Cyprus,country
+Malta,Malta,country
+Islanda,Iceland,country
+Emiratet e Bashkuara Arabe,United Arab Emirates,country
+Arabia Saudite,Saudi Arabia,country
+Tunizia,Tunisia,country
+Maroku,Morocco,country
+Algjeria,Algeria,country
+Argjentina,Argentina,country
+Meksika,Mexico,country
+Australia,Australia,country
+Vietnami,Vietnam,country
+Tajlanda,Thailand,country
+Indonezia,Indonesia,country
+Pakistani,Pakistan,country
+Bangladeshi,Bangladesh,country
+Irani,Iran,country
+Iraku,Iraq,country
+Libani,Lebanon,country
+Gjeorgjia,Georgia,country
+Armenia,Armenia,country
+Azerbajxhani,Azerbaijan,country
+Kazakistani,Kazakhstan,country
+Moldavia,Moldova,country
+Evropa,Europe,continent
+Azia,Asia,continent
+Afrika,Africa,continent
+Amerika,America,continent
+Oqeania,Oceania,continent
+Bashkimi Evropian,European Union,continent
+BE,EU,continent
+"Banesa, uji, energjia elektrike, gazi dhe lëndë të tjera djegëse","Housing, water, electricity, gas and other fuels",coicop
+"Banesa, uji, energjia elektrike, gazi dhe lëndët e tjera djegëse","Housing, water, electricity, gas and other fuels",coicop
+"Mobilje, pajisje shtëpiake dhe mirëmbajtje e rregullt e shtëpisë","Furnishings, household equipment and routine maintenance",coicop
+Informacioni dhe komunikimi,Information and communication,coicop
+"Rekreacion, sport dhe kulturë","Recreation, sport and culture",coicop
+Restorante dhe shërbime akomodimi,Restaurants and accommodation services,coicop
+Sigurimet dhe shërbimet financiare,Insurance and financial services,coicop
+"Kujdesi personal, mbrojtja sociale dhe mallra e shërbime të ndryshme","Personal care, social protection and miscellaneous goods and services",coicop
+Mallra dhe shërbime të ndryshme,Miscellaneous goods and services,coicop
+Bukë dhe drithra,Bread and cereals,coicop
+Mish,Meat,coicop
+Peshk,Fish,coicop
+"Qumësht, djathë dhe vezë","Milk, cheese and eggs",coicop
+Vajra dhe yndyrna,Oils and fats,coicop
+Fruta,Fruit,coicop
+Zarzavate,Vegetables,coicop
+"Sheqer, reçel, mjaltë, çokollatë dhe ëmbëlsira","Sugar, jam, honey, chocolate and confectionery",coicop
+Pije joalkoolike,Non-alcoholic beverages,coicop
+Pije alkoolike,Alcoholic beverages,coicop
+Duhan,Tobacco,coicop
+Veshje,Clothing,coicop
+Këpucë,Footwear,coicop
+Energji elektrike,Electricity,coicop
+Karburante,Fuels,coicop
+"Bujqësia, pyjet dhe peshkimi","Agriculture, forestry and fishing",sector
+"Bujqësia, pyjet dhe peshku","Agriculture, forestry and fishing",sector
+Industria nxjerrëse,Mining and quarrying,sector
+Industria përpunuese,Manufacturing,sector
+"Energjia elektrike, gazi, avulli","Electricity, gas, steam",sector
+Tregtia me shumicë dhe pakicë,Wholesale and retail trade,sector
+Transporti dhe magazinimi,Transportation and storage,sector
+Akomodimi dhe shërbimi ushqimor,Accommodation and food service,sector
+Aktivitete financiare dhe të sigurimit,Financial and insurance activities,sector
+Aktivitete të pasurive të paluajtshme,Real estate activities,sector
+"Aktivitete profesionale, shkencore dhe teknike","Professional, scientific and technical activities",sector
+Aktivitete të shërbimeve administrative dhe mbështetëse,Administrative and support service activities,sector
+Administrata publike dhe mbrojtja,Public administration and defence,sector
+Shëndetësia dhe veprimtaritë e punës sociale,Human health and social work activities,sector
+"Artet, argëtimi dhe rekreacioni","Arts, entertainment and recreation",sector
+Aktivitete të tjera të shërbimeve,Other service activities,sector
+Lindje të gjalla,Live births,demography
+Vdekje,Deaths,demography
+Martesa,Marriages,demography
+Shkurorëzime,Divorces,demography
+Rritja natyrore,Natural increase,demography
+Jetëgjatësia në lindje,Life expectancy at birth,demography
+Ardhje,Arrivals,tourism
+Netë qëndrime,Nights spent,tourism
+Të huaj,Foreigners,tourism
+Rezidentë,Residents,tourism
+Jorezidentë,Non-residents,tourism
+Vizitorë,Visitors,tourism
+Punëkërkues,Job seekers,status
+I vetëpunësuar,Self-employed,status
+Të punësuar me pagë,Employees,status
+Fshat,Rural,urban_rural
+Qytet,Urban,urban_rural
+Fshatare,Rural,urban_rural
+Qytetare,Urban,urban_rural
+Beqar,Never married,marital
+Beqare,Never married,marital
+Beqar/e,Never married,marital
+Pamartuar,Never married,marital
+I pamartuar,Never married,marital
+E pamartuar,Never married,marital
+Martuar,Married,marital
+I martuar,Married,marital
+E martuar,Married,marital
+I (e) martuar,Married,marital
+I ve,Widowed,marital
+E ve,Widowed,marital
+I (e) ve,Widowed,marital
+I divorcuar,Divorced,marital
+E divorcuar,Divorced,marital
+I (e) ndarë,Divorced,marital
+I ndarë,Divorced,marital
+E ndarë,Divorced,marital
